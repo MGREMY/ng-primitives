@@ -278,7 +278,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
       compareWith: _compareWith = signal<(a: T | undefined, b: T | undefined) => boolean>(
         Object.is,
       ),
-      placement: _placemement = signal<NgpComboboxPlacement>('bottom'),
+      placement: _placement = signal<NgpComboboxPlacement>('bottom'),
       container: _container = signal<HTMLElement | string | null>('body'),
       flip: _flip = signal<NgpFlip>(true),
       offset: _offset = signal<NgpOffset>(0),
@@ -311,7 +311,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
           option => option.index(),
         ),
       );
-      const constrolStatus = computed(() =>
+      const controlStatus = computed(() =>
         input() ? input()?.controlStatus() : hostControlStatus(),
       );
 
@@ -359,12 +359,12 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
       dataBinding(elementRef, 'data-open', () => (open() ? '' : null));
       dataBinding(elementRef, 'data-disabled', () => (_disabled() ? '' : null));
       dataBinding(elementRef, 'data-multiple', () => (_multiple() ? '' : null));
-      dataBinding(elementRef, 'data-invalid', () => (constrolStatus()?.invalid ? '' : null));
-      dataBinding(elementRef, 'data-valid', () => (constrolStatus()?.valid ? '' : null));
-      dataBinding(elementRef, 'data-touched', () => (constrolStatus()?.touched ? '' : null));
-      dataBinding(elementRef, 'data-pristine', () => (constrolStatus()?.pristine ? '' : null));
-      dataBinding(elementRef, 'data-dirty', () => (constrolStatus()?.dirty ? '' : null));
-      dataBinding(elementRef, 'data-pending', () => (constrolStatus()?.pending ? '' : null));
+      dataBinding(elementRef, 'data-invalid', () => (controlStatus()?.invalid ? '' : null));
+      dataBinding(elementRef, 'data-valid', () => (controlStatus()?.valid ? '' : null));
+      dataBinding(elementRef, 'data-touched', () => (controlStatus()?.touched ? '' : null));
+      dataBinding(elementRef, 'data-pristine', () => (controlStatus()?.pristine ? '' : null));
+      dataBinding(elementRef, 'data-dirty', () => (controlStatus()?.dirty ? '' : null));
+      dataBinding(elementRef, 'data-pending', () => (controlStatus()?.pending ? '' : null));
 
       // Event listener
       listener(elementRef, 'keydown', (event: KeyboardEvent) => {
@@ -808,7 +808,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
         disabled: _disabled,
         allowDeselect: _allowDeselect,
         compareWith: _compareWith,
-        placement: _placemement,
+        placement: _placement,
         container: _container,
         flip: _flip,
         offset: _offset,

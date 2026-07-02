@@ -116,7 +116,7 @@ export const [
     });
 
     // Setup interactions
-    ngpInteractions({ hover: true, press: true, disabled: comboboxState().disabled });
+    ngpInteractions({ hover: true, press: true, disabled: _disabled });
 
     // Host binding
     attrBinding(elementRef, 'role', 'option');
@@ -125,7 +125,7 @@ export const [
     attrBinding(elementRef, 'aria-selected', () => (selected() ? 'true' : null));
     dataBinding(elementRef, 'data-selected', selected);
     dataBinding(elementRef, 'data-active', active);
-    dataBinding(elementRef, 'data-disabled', comboboxState().disabled);
+    dataBinding(elementRef, 'data-disabled', _disabled);
 
     // Event listener
     listener(elementRef, 'click', select);
