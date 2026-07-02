@@ -448,10 +448,13 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
         closeDropdown();
       });
 
-      function setValue(val: T | undefined): void {
+      function setValue(val: T | undefined, options?: SetterOptions): void {
         value.set(val);
-        valueChange.emit(val);
-        onValueChange?.(val);
+
+        if (options?.emit !== false) {
+          valueChange.emit(val);
+          onValueChange?.(val);
+        }
       }
 
       async function openDropdown(): Promise<void> {
