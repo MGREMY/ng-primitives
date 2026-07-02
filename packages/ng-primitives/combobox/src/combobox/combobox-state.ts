@@ -13,10 +13,11 @@ import { domSort, injectElementRef } from 'ng-primitives/internal';
 import { NgpFlip, NgpOffset, NgpOverlay } from 'ng-primitives/portal';
 import {
   attrBinding,
-  controlledState,
+  controlled,
   createPrimitive,
   dataBinding,
   deprecatedSetter,
+  emitter,
   listener,
   SetterOptions,
   StateInjectionOptions,
@@ -289,11 +290,8 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
     }: NgpComboboxProps<T>): NgpComboboxState<T> => {
       const elementRef = injectElementRef<HTMLElement>();
 
-      const [value, setValue, valueChange] = controlledState<T | undefined>({
-        value: _value,
-        defaultValue: undefined,
-        onChange: onValueChange,
-      });
+      const value = controlled<T | undefined>(_value);
+      const valueChange = emitter<T | undefined>();
 
       const input = signal<NgpComboboxInputState | undefined>(undefined);
       const button = signal<NgpComboboxButtonState | undefined>(undefined);
@@ -450,6 +448,12 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
         closeDropdown();
       });
 
+      function setValue(val: T | undefined): void {
+        value.set(val);
+        valueChange.emit(val);
+        onValueChange?.(val);
+      }
+
       async function openDropdown(): Promise<void> {
         if (_disabled() || open()) {
           return;
@@ -534,7 +538,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
           );
           const allValues = regularOptions.map(opt => opt.value());
 
-          setValue(allValues as T, { emit: true });
+          setValue(allValues as T);
           return;
         }
 
@@ -547,9 +551,9 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
           const newValue = [...((value() as T[] | undefined) ?? []), optionValue as T];
 
           // add the option to the value
-          setValue(newValue as T, { emit: true });
+          setValue(newValue as T);
         } else {
-          setValue(optionValue as T, { emit: true });
+          setValue(optionValue as T);
 
           // close the dropdown on single selection
           closeDropdown();
@@ -580,7 +584,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
             return; // Do nothing in single selection mode
           }
 
-          setValue([] as T, { emit: true });
+          setValue([] as T);
           return;
         }
 
@@ -589,10 +593,10 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
           const newValue = values.filter(v => !_compareWith()(v, optionValue as T));
 
           // remove the option from the value
-          setValue(newValue as T, { emit: true });
+          setValue(newValue as T);
         } else {
           // in single selection mode with allowDeselect enabled, set value to undefined
-          setValue(undefined, { emit: true });
+          setValue(undefined);
         }
       }
 
@@ -802,7 +806,7 @@ export const [NgpComboboxStateToken, ngpCombobox, _injectComboboxState, provideC
       return {
         elementRef,
         value: deprecatedSetter(value, 'setValue', setValue),
-        valueChange,
+        valueChange: valueChange.asObservable(),
         setValue,
         multiple: _multiple,
         disabled: _disabled,
